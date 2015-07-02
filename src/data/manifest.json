@@ -321,5 +321,12 @@
             "latest": "2015-04-08",
             "2015-04-08": "2015-04-08"
         }
+    },
+    "productadvertising": {
+        "namespace": "ProductAdvertising",
+        "versions": {
+            "latest": "2013-08-01",
+            "2013-08-01": "2013-08-01"
+        }
     }
 }

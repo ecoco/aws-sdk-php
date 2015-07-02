@@ -58,6 +58,9 @@
     },
     "sa-east-1/s3": {
       "endpoint": "s3-{region}.amazonaws.com"
+    },
+    "*/productadvertising": {
+      "endpoint": "webservices.amazon.{region}/onca/xml"
     }
   }
 }
