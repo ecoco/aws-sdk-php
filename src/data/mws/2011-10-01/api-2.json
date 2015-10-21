@@ -1,23 +1,46 @@
 {
   "metadata":{
-    "apiVersion":"2013-08-01",
-    "serviceAbbreviation":"Amazon PAA",
-    "serviceFullName":"Amazon Product Advertising API",
+    "apiVersion":"2011-10-01",
+    "serviceAbbreviation":"Amazon MWS",
+    "serviceFullName":"Amazon MWS API",
     "signatureVersion":"v2",
-    "endpointPrefix":"productadvertising",
-    "xmlNamespace":"http://webservices.amazon.com/AWSECommerceService/2011-08-01",
+    "endpointPrefix":"mws",
+    "xmlNamespace":"http://mws.amazonservices.com/schema/Products/2011-10-01",
     "protocol":"query"
   },
   "operations":{
-    "ItemSearch":{
-      "name":"ItemSearch",
+    "ListMatchingProducts":{
+      "name":"ListMatchingProducts",
       "http":{
-        "method":"GET",
+        "method":"POST",
+        "requestUri":"/Products"
+      },
+      "input":{"shape":"ListMatchingProductsInput"},
+      "output":{
+        "shape":"ListMatchingProductsResponse"
+      },
+      "errors":[
+        {
+            "error":{"httpStatusCode":400},
+            "exception":true
+        },
+        {
+            "error":{
+              "httpStatusCode": 503,
+              "code": "RequestThrottled"
+            },
+            "exception":true
+        }
+      ]
+    },
+    "GetServiceStatus":{
+      "name":"GetServiceStatus",
+      "http":{
+        "method":"POST",
         "requestUri":"/"
       },
-      "input":{"shape":"ItemSearchInput"},
       "output":{
-        "shape":"ItemSearchResponse"
+        "shape":"GetServiceStatusResponse"
       },
       "errors":[
         {
@@ -26,249 +49,119 @@
             "exception":true
         }
       ]
-    },
-    "ItemLookup":{
-      "name":"ItemLookup",
-      "http":{
-        "method":"GET",
-        "requestUri":"/"
-      },
-      "input":{"shape":"ItemLookupInput"},
-      "output":{
-        "shape":"ItemLookupResponse"
-      },
-      "errors":[
-        {
-          "shape":"InvalidParameterException",
-          "error":{"httpStatusCode":400},
-          "exception":true
-          }
-      ]
     }
   },
-  "shapes":{
-    "ItemLookupInput":{
-        "type":"structure",
-        "required":[
-            "ItemId"
-        ],
-        "members":{
-          "Service": {"shape":"string"},
-          "Operation": {"shape":"string"},
-          "AssociateTag":{"shape":"string"},
-          "Condition": {"shape":"string"},
-          "IdType": {"shape":"string"},
-          "IncludeReviewsSummary": {"shape":"string"},
-          "ItemId": {"shape":"string"},
-          "MerchantId": {"shape":"string"},
-          "RelatedItemPage": {"shape":"string"},
-          "RelationshipType": {"shape":"string"},
-          "SearchIndex": {"shape":"SearchIndex"},
-          "TruncateReviewsAt": {"shape":"string"},
-          "VariationPage": {"shape":"string"},
-          "ResponseGroup": {"shape":"string"}
-        }
-    },
-    "ItemSearchInput":{
-      "type":"structure",
-      "required":[
-        "SearchIndex",
-        "AssociateTag",
-        "Service"
+  "shapes": {
+    "ListMatchingProductsInput": {
+      "type": "structure",
+      "required": [
+        "SellerId",
+        "MarketplaceId",
+        "Query"
       ],
-      "members":{
-        "Service": {"shape":"string"},
-        "Operation": {"shape":"string"},
-        "AssociateTag":{"shape":"string"},
-        "ItemPage": {"shape":"integer"},
-        "SearchIndex": {"shape":"SearchIndex"},
-        "BrowseNode": {"shape":"BrowseNode"},
-        "Sort":{"shape":"string"},
-        "Condition":{"shape":"string"},
-        "ResponseGroup":{"shape":"string"}
-
-      }
-    },
-
-    "ItemLookupResponse":{
-      "type":"structure",
-      "members":{
-        "OperationRequest":{"shape":"OperationRequest"},
-        "Data":{
-          "locationName": "Items",
-          "shape":"ItemListWrapper"
-        }
-      }
-    },
-    "ItemSearchResponse": {
-      "type":"structure",
-      "members":{
-        "OperationRequest":{"shape":"OperationRequest"},
-        "Data":{
-          "locationName": "Items",
-          "shape":"ItemListWrapper"
-        }
-      }
-    },
-    "OperationRequest": {
-      "type":"structure",
-      "members":{
-        "RequestId":{"shape":"string"}
-      }
-    },
-    "ItemListWrapper": {
-      "type":"structure",
-      "members":{
-        "TotalResults": {"shape": "string"},
-        "TotalPages": {"shape": "string"},
-        "Request": {"shape": "Request"},
-        "Items": {
-          "locationName":"Item",
-          "shape": "ItemList"
-        }
-      }
-    },
-    "Request": {
-      "type":"structure",
       "members": {
-        "IsValid": {"shape": "string"},
-        "ItemSearchRequest": {"shape": "ItemSearchRequest"}
+        "SellerId": {
+          "type": "string"
+        },
+        "MarketplaceId": {
+          "type": "string"
+        },
+        "Query": {
+          "type": "string"
+        }
       }
     },
-    "ItemSearchRequest": {
-      "type":"structure",
+    "ListMatchingProductsResponse": {
+      "type": "structure",
       "members": {
-        "BrowseNode": {"shape": "integer"},
-        "ItemPage": {"shape": "integer"},
-        "ResponseGroup": {"shape": "integer"},
-        "SearchIndex": {"shape": "integer"}
+        "ListMatchingProductsResult": {
+          "shape": "ListMatchingProductsResult"
+        }
       }
     },
-    "ItemList": {
+    "ListMatchingProductsResult": {
+      "type": "structure",
+      "members": {
+        "Products": {
+          "type":"list",
+          "member":{
+            "locationName":"Product",
+            "shape":"Product"
+          }
+        }
+      }
+    },
+    "ProductList": {
       "type":"list",
       "flattened":true,
       "member":{
-        "locationName":"Item",
-        "shape":"Item"
+        "locationName":"Product",
+        "shape":"Product"
       }
     },
-    "Item": {
-      "type":"structure",
-      "members":{
-        "ASIN":{"shape":"string"},
-        "DetailPageURL":{"shape":"string"},
-        "SalesRank":{"shape":"string"},
-        "ItemAttributes":{"shape":"ItemAttributes"},
-        "OfferSummary": {"shape":"OfferSummary"},
-        "OfferList":{
-          "locationName": "Offers",
-          "shape":"OfferListWrapper"
+    "GetServiceStatusResponse": {
+      "type": "structure",
+      "members": {
+        "GetServiceStatusResult": {
+          "shape": "GetServiceStatusResult"
         }
       }
     },
-    "ItemAttributes": {
-      "type":"structure",
-      "members":{
-        "Title":{"shape":"string"},
-        "ProductTypeName":{"shape":"string"},
-        "ProductGroup":{"shape":"string"},
-        "Binding":{"shape":"string"},
-        "Brand":{"shape":"string"},
-        "EAN":{"shape":"string"},
-        "Manufacturer":{"shape":"string"},
-        "Model":{"shape":"string"},
-        "MPN":{"shape":"string"},
-        "NumberOfItems":{"shape":"string"},
-        "ItemDimensions": {"shape":"ItemDimensions"},
-        "ListPrice": {"shape":"Price"}
-      }
-    },
-    "ItemDimensions": {
-      "type":"structure",
+    "GetServiceStatusResult": {
+      "type": "structure",
       "members": {
-        "Weight": {"shape": "integer"}
-      }
-    },
-    "OfferSummary": {
-      "type":"structure",
-      "members": {
-        "TotalNew": {"shape": "integer"},
-        "TotalUsed": {"shape": "integer"},
-        "TotalCollectible": {"shape": "integer"},
-        "TotalRefurbished": {"shape": "integer"},
-        "LowestNewPrice": {"shape": "Price"},
-        "LowestUsedPrice": {"shape": "Price"},
-        "LowestCollectiblePrice": {"shape": "Price"}
-      }
-    },
-    "OfferListWrapper": {
-      "type":"structure",
-      "members":{
-        "TotalResults": {"shape": "string"},
-        "TotalPages": {"shape": "string"},
-        "Offers": {
-          "locationName":"Offer",
-          "shape": "OfferList"
+        "Status": {
+          "type": "string"
+        },
+        "Timestamp": {
+          "type": "string"
         }
       }
     },
-    "OfferList": {
+    "Product": {
+      "type": "structure",
+      "members": {
+        "Identifiers": {
+          "shape": "ProductIdentifiers"
+        },
+        "SalesRankings": {
+          "shape": "SalesRankings"
+        }
+      }
+    },
+    "ProductIdentifiers": {
+      "type": "structure",
+      "members": {
+        "MarketplaceASIN": {
+          "shape": "MarketplaceASIN"
+        }
+      }
+    },
+    "SalesRankings": {
       "type":"list",
-      "flattened":true,
       "member":{
-        "locationName":"Offer",
-        "shape":"Offer"
+        "locationName":"SalesRank",
+        "shape":"SalesRank"
       }
     },
-    "Offer": {
-      "type":"structure",
-      "members":{
-        "Merchant":{"shape":"Merchant"},
-        "OfferAttributes":{"shape":"OfferAttributes"},
-        "OfferListing":{"shape":"OfferListing"}
-      }
-    },
-    "Merchant":{
-      "type":"structure",
+    "SalesRank": {
+      "type": "structure",
       "members": {
-        "Name": {"shape":"string"}
+        "ProductCategoryId": {"type": "string"},
+        "Rank": {"type": "integer"}
       }
     },
-    "OfferAttributes":{
-      "type":"structure",
+    "MarketplaceASIN": {
+      "type": "structure",
       "members": {
-        "Condition": {"shape":"string"}
+        "MarketplaceId": {
+          "type": "string"
+        },
+        "ASIN": {
+          "type": "string"
+        }
       }
-    },
-    "OfferListing":{
-      "type":"structure",
-      "members": {
-        "Price": {"shape": "Price"},
-        "Availability": {"shape":"string"},
-        "AvailabilityAttributes": {"shape":"AvailabilityAttributes"}
-      }
-    },
-    "AvailabilityAttributes":{
-      "type":"structure",
-      "members": {
-        "AvailabilityType": {"shape": "string"},
-        "MinimumHours": {"shape": "integer"},
-        "MaximumHours": {"shape": "integer"}
-      }
-    },
-    "Price": {
-      "type":"structure",
-      "members": {
-        "Amount": {"shape": "integer"},
-        "CurrencyCode": {"shape": "string"},
-        "FormattedPrice": {"shape": "string"}
-      }
-    },
-    "SearchIndex":{
-      "type":"string"
-    },
-    "BrowseNode":{"type":"integer"},
-    "string":{"type":"string"},
-    "integer":{"type":"integer"}
+    }
+
   }
 }

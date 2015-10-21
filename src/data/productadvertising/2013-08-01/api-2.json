@@ -3,7 +3,8 @@
     "apiVersion":"2013-08-01",
     "serviceAbbreviation":"Amazon PAA",
     "serviceFullName":"Amazon Product Advertising API",
-    "signatureVersion":"v2",
+    "signatureVersion":"v2PAA",
+    "endpointPrefix":"productadvertising",
     "xmlNamespace":"http://webservices.amazon.com/AWSECommerceService/2011-08-01",
     "protocol":"query"
   },
@@ -20,45 +21,54 @@
       },
       "errors":[
         {
-          "shape":"InvalidParameterException",
-          "error":{
-            "code":"InvalidParameter",
-            "httpStatusCode":400,
-            "senderFault":true
-          },
-          "exception":true
-        },
-        {
-          "shape":"InternalErrorException",
-          "error":{
-            "code":"InternalError",
-            "httpStatusCode":500
-          },
-          "exception":true,
-          "fault":true
-        },
-        {
-          "shape":"AuthorizationErrorException",
-          "error":{
-            "code":"AuthorizationError",
-            "httpStatusCode":403,
-            "senderFault":true
-          },
-          "exception":true
-        },
-        {
-          "shape":"NotFoundException",
-          "error":{
-            "code":"NotFound",
-            "httpStatusCode":404,
-            "senderFault":true
-          },
-          "exception":true
+            "shape":"InvalidParameterException",
+            "error":{"httpStatusCode":400},
+            "exception":true
         }
+      ]
+    },
+    "ItemLookup":{
+      "name":"ItemLookup",
+      "http":{
+        "method":"GET",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ItemLookupInput"},
+      "output":{
+        "shape":"ItemLookupResponse"
+      },
+      "errors":[
+        {
+          "shape":"InvalidParameterException",
+          "error":{"httpStatusCode":400},
+          "exception":true
+          }
       ]
     }
   },
   "shapes":{
+    "ItemLookupInput":{
+        "type":"structure",
+        "required":[
+            "ItemId"
+        ],
+        "members":{
+          "Service": {"shape":"string"},
+          "Operation": {"shape":"string"},
+          "AssociateTag":{"shape":"string"},
+          "Condition": {"shape":"string"},
+          "IdType": {"shape":"string"},
+          "IncludeReviewsSummary": {"shape":"string"},
+          "ItemId": {"shape":"string"},
+          "MerchantId": {"shape":"string"},
+          "RelatedItemPage": {"shape":"string"},
+          "RelationshipType": {"shape":"string"},
+          "SearchIndex": {"shape":"SearchIndex"},
+          "TruncateReviewsAt": {"shape":"string"},
+          "VariationPage": {"shape":"string"},
+          "ResponseGroup": {"shape":"string"}
+        }
+    },
     "ItemSearchInput":{
       "type":"structure",
       "required":[
@@ -68,16 +78,28 @@
       ],
       "members":{
         "Service": {"shape":"string"},
-        "SearchIndex": {"shape":"string"},
         "Operation": {"shape":"string"},
+        "AssociateTag":{"shape":"string"},
+        "ItemPage": {"shape":"integer"},
+        "SearchIndex": {"shape":"SearchIndex"},
         "BrowseNode": {"shape":"BrowseNode"},
         "Sort":{"shape":"string"},
         "Condition":{"shape":"string"},
-        "ResponseGroup":{"shape":"string"},
-        "AssociateTag":{"shape":"string"}
+        "ResponseGroup":{"shape":"string"}
+
       }
     },
-    "BrowseNode":{"type":"integer"},
+
+    "ItemLookupResponse":{
+      "type":"structure",
+      "members":{
+        "OperationRequest":{"shape":"OperationRequest"},
+        "Data":{
+          "locationName": "Items",
+          "shape":"ItemListWrapper"
+        }
+      }
+    },
     "ItemSearchResponse": {
       "type":"structure",
       "members":{
@@ -99,10 +121,27 @@
       "members":{
         "TotalResults": {"shape": "string"},
         "TotalPages": {"shape": "string"},
+        "Request": {"shape": "Request"},
         "Items": {
           "locationName":"Item",
           "shape": "ItemList"
         }
+      }
+    },
+    "Request": {
+      "type":"structure",
+      "members": {
+        "IsValid": {"shape": "string"},
+        "ItemSearchRequest": {"shape": "ItemSearchRequest"}
+      }
+    },
+    "ItemSearchRequest": {
+      "type":"structure",
+      "members": {
+        "BrowseNode": {"shape": "integer"},
+        "ItemPage": {"shape": "integer"},
+        "ResponseGroup": {"shape": "integer"},
+        "SearchIndex": {"shape": "integer"}
       }
     },
     "ItemList": {
@@ -225,6 +264,10 @@
         "FormattedPrice": {"shape": "string"}
       }
     },
+    "SearchIndex":{
+      "type":"string"
+    },
+    "BrowseNode":{"type":"integer"},
     "string":{"type":"string"},
     "integer":{"type":"integer"}
   }

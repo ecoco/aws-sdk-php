@@ -19,7 +19,7 @@ class SignatureV2 implements SignatureInterface
 
     /**
      * @param string $service Service name to use when signing
-     * @param string $region  Region name to use when signing
+     * @param string $region Region name to use when signing
      */
     public function __construct($service, $region)
     {
@@ -30,10 +30,12 @@ class SignatureV2 implements SignatureInterface
     public function signRequest(
         RequestInterface $request,
         CredentialsInterface $credentials
-    ) {
+    )
+    {
         $params = Psr7\parse_query($request->getBody()->__toString());
-        unset($params['Action']);
 
+        $params['SignatureVersion'] = '2';
+        $params['SignatureMethod'] = 'HmacSHA256';
         $params['AWSAccessKeyId'] = $credentials->getAccessKeyId();
         $params['Timestamp'] = gmdate(self::ISO8601_BASIC);
 
@@ -42,11 +44,12 @@ class SignatureV2 implements SignatureInterface
         $canonicalizedQueryString = $this->getCanonicalizedQuery($params);
 
         $stringToSign = implode(
-            "\n", [
-            $request->getMethod(),
-            $request->getUri()->getHost(),
-            $request->getUri()->getPath(),
-            $canonicalizedQueryString
+            "\n",
+            [
+                $request->getMethod(),
+                $request->getUri()->getHost(),
+                $request->getUri()->getPath(),
+                $canonicalizedQueryString
             ]
         );
 
@@ -55,6 +58,8 @@ class SignatureV2 implements SignatureInterface
 
         // encode the signature for the request
         $signature = str_replace('%7E', '~', rawurlencode($signature));
+        $signature = str_replace('+', '%20', $signature);
+        $signature = str_replace('*', '%2A', $signature);
 
 
         $queryString = $canonicalizedQueryString . "&Signature=" . $signature;
@@ -64,7 +69,7 @@ class SignatureV2 implements SignatureInterface
                 $request->getUri(),
                 [
                     'Content-Length' => strlen($queryString),
-                    'Content-Type'   => 'application/x-www-form-urlencoded'
+                    'Content-Type' => 'application/x-www-form-urlencoded'
                 ],
                 $queryString
             );
@@ -82,7 +87,8 @@ class SignatureV2 implements SignatureInterface
         RequestInterface $request,
         CredentialsInterface $credentials,
         $expires
-    ) {
+    )
+    {
         throw new \RuntimeException('Not Yet Supported');
     }
 

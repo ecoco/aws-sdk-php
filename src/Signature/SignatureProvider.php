@@ -113,6 +113,8 @@ class SignatureProvider
                     return $service === 's3'
                         ? new S3SignatureV4($service, $region)
                         : new SignatureV4($service, $region);
+                case 'v2PAA':
+                    return new SignatureV2PAA($service, $region);
                 case 'v2':
                     return new SignatureV2($service, $region);
                 case 'anonymous':
