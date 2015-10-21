@@ -1,0 +1,10 @@
+{
+  "pagination": {
+    "ItemSearch": {
+      "input_token": "ItemPage",
+      "more_results": "Data.Request.ItemSearchRequest.ItemPage<`10`",
+      "output_token": "sum([Data.Request.ItemSearchRequest.ItemPage || `1`, `1`])",
+      "result_key": "Data.Items"
+    }
+  }
+}
