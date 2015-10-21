@@ -46,10 +46,5 @@
         "psr-4": {
             "Aws\\Test\\": "tests/"
         }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "3.0-dev"
-        }
     }
 }
