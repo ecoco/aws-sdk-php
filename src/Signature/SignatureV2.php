@@ -37,6 +37,9 @@ class SignatureV2 implements SignatureInterface
         $params['SignatureVersion'] = '2';
         $params['SignatureMethod'] = 'HmacSHA256';
         $params['AWSAccessKeyId'] = $credentials->getAccessKeyId();
+        if ($credentials->getSecurityToken()) {
+            $params['MWSAuthToken'] = $credentials->getSecurityToken();
+        }
         $params['Timestamp'] = gmdate(self::ISO8601_BASIC);
 
         ksort($params);
